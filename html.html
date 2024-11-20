@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>다양의 다형성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            transition: background-color 0.5s ease;
+        }
+        h1 {
+            color: #ff0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>다양의 다형성 웹사이트에 오신 것을 환영합니다!</h1>
+
+    <script type="module">
+        // Firebase SDK 로드
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyAPuYD59dgnbzBmtuy7KODTpCeZWEq3NXg",
+            authDomain: "misul-34b6a.firebaseapp.com",
+            databaseURL: "https://misul-34b6a-default-rtdb.firebaseio.com",
+            projectId: "misul-34b6a",
+            storageBucket: "misul-34b6a.firebasestorage.app",
+            messagingSenderId: "1073395671841",
+            appId: "1:1073395671841:web:361777cc2e26c237579460",
+            measurementId: "G-FMVKQV02NE"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // 랜덤 색상 생성 함수
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // 랜덤 위치 생성 함수
+        function getRandomPosition() {
+            const top = Math.random() * 80;  // 화면 높이의 80% 범위
+            const left = Math.random() * 80; // 화면 너비의 80% 범위
+            return { top, left };
+        }
+
+        // 페이지 로딩 시마다 랜덤 색상을 배경색으로 설정
+        const randomColor = getRandomColor();
+        document.body.style.backgroundColor = randomColor;
+
+        // 위치 데이터 생성
+        const randomPosition = getRandomPosition();
+
+        // Firebase에 색상 및 위치 저장하기
+        function saveColorToFirebase(color, position) {
+            const colorRef = ref(database, 'colors/' + Date.now()); // 색상 ID를 타임스탬프로 생성
+            set(colorRef, {
+                name: Math.floor(Math.random() * ( 8- 2) + 2),
+                colorCode: color,
+                position: position // 위치 데이터를 함께 저장
+            })
+            .then(() => {
+                console.log("색상과 위치 데이터가 Firebase에 저장되었습니다.");
+            })
+            .catch((error) => {
+                console.error("색상 및 위치 저장 실패: ", error);
+            });
+        }
+
+        // 랜덤 색상과 위치 데이터를 Firebase에 저장
+        saveColorToFirebase(randomColor, randomPosition);
+
+    </script>
+</body>
+</html>
